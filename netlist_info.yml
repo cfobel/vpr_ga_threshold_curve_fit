@@ -1,0 +1,100 @@
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1072]
+      - [block_count, 1135]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/ex5p.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1099]
+      - [block_count, 1221]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/tseng.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1271]
+      - [block_count, 1290]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/apex4.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1411]
+      - [block_count, 1425]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/misex3.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1536]
+      - [block_count, 1544]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/alu4.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1561]
+      - [block_count, 1600]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/diffeq.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1599]
+      - [block_count, 1796]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/dsip.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1791]
+      - [block_count, 1826]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/seq.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1916]
+      - [block_count, 1919]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/apex2.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1935]
+      - [block_count, 1941]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/s298.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1847]
+      - [block_count, 2092]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/des.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 1936]
+      - [block_count, 2133]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/bigkey.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 3576]
+      - [block_count, 3692]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/frisc.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 3706]
+      - [block_count, 3752]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/spla.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 3735]
+      - [block_count, 3849]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/elliptic.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 4608]
+      - [block_count, 4618]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/ex1010.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 4591]
+      - [block_count, 4631]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/pdc.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 6435]
+      - [block_count, 6541]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/s38417.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 6485]
+      - [block_count, 6789]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/s38584.1.net]
+- !!python/tuple
+  - !!python/object/apply:collections.OrderedDict
+    - - [net_count, 8445]
+      - [block_count, 8527]
+  - !!python/object/new:path.path [/var/benchmarks/mcnc/clma.net]
