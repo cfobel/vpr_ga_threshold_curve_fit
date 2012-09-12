@@ -1,10 +1,12 @@
 from __future__ import division
 import shelve
 from collections import OrderedDict
+import copy
 
 from path import path
 import yaml
 from pymodelfit.fitgui import fit_data
+from pymodelfit import LinearModel, LinearInterpolatedModel
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate.interpolate import interp1d
@@ -54,6 +56,28 @@ def plot_netlist_cdf(s, netlist):
     plt.ylabel(y_label)
 
 
+def get_combined_histogram(s):
+    '''
+    Generate combined histogram across all netlists in a shelve file.
+    '''
+    hists = np.array(zip(*[np.histogram(get_deltas_from_netlist(s, netlist),
+            bins=50) for netlist in s])[0])
+    return np.sum(hists, axis=0)
+
+
+def get_combined_swap_fraction_to_delta_range_fraction(s):
+    #import pudb; pudb.set_trace()
+    hist = get_combined_histogram(s)
+    count = len(hist)
+    plot_data = {'Cummulative swaps count': hist.cumsum() / sum(hist),
+        '% of delta range': np.arange(count) / count}
+    x_label, y_label = 'Cummulative swaps count', '% of delta range'
+    f = LinearInterpolatedModel()
+    f.fitData(np.concatenate(([0], plot_data[x_label])), 
+            np.concatenate(([0], plot_data[y_label])))
+    return f
+
+
 def get_swap_fraction_to_delta_range_fraction(s, netlist, percent=False):
     deltas = get_deltas_from_netlist(s, netlist, percent=percent)
     hist, bin_edges = np.histogram(deltas, bins=50)
@@ -61,7 +85,9 @@ def get_swap_fraction_to_delta_range_fraction(s, netlist, percent=False):
     plot_data = {'Cummulative swaps count': hist.cumsum() / sum(hist),
         '% of delta range': np.arange(count) / count}
     x_label, y_label = 'Cummulative swaps count', '% of delta range'
-    f = interp1d(plot_data[x_label], plot_data[y_label])
+    f = LinearInterpolatedModel()
+    f.fitData(np.concatenate(([0], plot_data[x_label])), 
+            np.concatenate(([0], plot_data[y_label])))
     return f, bin_edges
 
 
@@ -86,17 +112,9 @@ class LinearFunction(object):
         arr = np.array(x,copy=False,dtype=float)
         res = self.m * arr + self.b
         return res.reshape(arr.shape)
- 
 
 
-if __name__ == '__main__':
-    import sys
-
-    if len(sys.argv) != 2:
-        print >> sys.stderr, 'usage: %s <shelve data file>' % sys.argv[0]
-        raise SystemExit
-    input_file = path(sys.argv[1])
-    
+def get_threshold_parameter_config(input_file):
     s = shelve.open(input_file)
     netlist_info = yaml.load(path('netlist_info.yml').bytes())
     netlist_ranks = OrderedDict([(v[1], i) for i, v in enumerate(netlist_info)])
@@ -106,13 +124,13 @@ if __name__ == '__main__':
     mappings = OrderedDict([(k, get_swap_fraction_to_delta_range_fraction(s, k))
             for k in netlist_name_ranks])
     plt.cla()
-    x = np.linspace(0.2, 1, 1000)
+    x = np.linspace(0, 1, 1000)
     for k, (f, bin_edges) in mappings.iteritems():
         plt.plot(x, [f(v) for v in x], label=k)
         print '[{:^30}] {:.03g}'.format(k, bin_edges[-1]) # * f(0.5))
-    plt.plot(x, [np.array([f(v)
-            for (f, bin_edges) in mappings.itervalues()]).mean()
-                    for v in x], label='mean', linewidth=4)
+    f = get_combined_swap_fraction_to_delta_range_fraction(s)
+    swap_fraction_to_delta_range_fraction = f
+    plt.plot(x, [f(v) for v in x], label='mean', linewidth=4)
     x_label, y_label = 'Cummulative swaps count', '% of delta range'
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -134,10 +152,33 @@ if __name__ == '__main__':
     normalized_net_counts = net_counts / net_counts.max()
 
     axis =[]
-    axis.append(plt.plot(deltas, block_counts, label='block vs deltas')[0].axes)
-    path('block_vs_deltas.pickled').pickle_dump((deltas, block_counts))
+    axis.append(plt.plot(block_counts, deltas, label='block vs deltas')[0].axes)
+    model = LinearModel()
+    model.fitData(block_counts, deltas)
+    axis.append(plt.plot(block_counts, [model(v)
+            for v in block_counts], label='fitted')[0].axes)
     #for ax in axis:
         #ax.set_yscale('log')
     plt.legend()
 
     plt.show()
+
+    delta_range_model_data = {'i1d': copy.deepcopy(f.i1d),
+            'data': copy.deepcopy(f.data)}
+    return delta_range_model_data, model.pardict
+
+
+if __name__ == '__main__':
+    import sys
+
+    if len(sys.argv) != 2:
+        print >> sys.stderr, 'usage: %s <shelve data file>' % sys.argv[0]
+        raise SystemExit
+    input_file = path(sys.argv[1])
+    delta_range_model_data, max_delta_model_params =\
+            get_threshold_parameter_config(input_file)
+
+    swap_fraction_to_delta_range_fraction = LinearInterpolatedModel()
+    for key, value in delta_range_model_data.iteritems():
+        setattr(swap_fraction_to_delta_range_fraction, key, value)
+    block_count_to_max_delta = LinearModel(**max_delta_model_params)
